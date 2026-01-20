@@ -42,7 +42,7 @@ python3 scripts/fetch_news.py --source hackernews --limit 20 --keyword "AI,LLM,G
 Only use `--keyword` for very specific, unique terms (e.g., "DeepSeek", "OpenAI").
 ```bash
 python3 scripts/fetch_news.py --source all --limit 10 --keyword "DeepSeek" --deep
-``````
+```
 
 **Arguments:**
 
@@ -67,37 +67,29 @@ If the user requests a specific time window (e.g., "past X hours") and the resul
 2.  **Smart Fill**: If the list is short, you MUST include high-value/high-heat items from a wider range (e.g. past 24h) to ensure the report provides at least 5 meaningful insights.
 2.  **Annotation**: Clearly mark these older items (e.g., "⚠️ 18h ago", "🔥 24h Hot") so the user knows they are supplementary.
 3.  **High Value**: Always prioritize "SOTA", "Major Release", or "High Heat" items even if they slightly exceed the time window.
+4.  **GitHub Trending Exception**: For purely list-based sources like **GitHub Trending**, strictly return the valid items from the fetched list (e.g. Top 10). **List ALL fetched items**. Do **NOT** perform "Smart Fill".
+    *   **Deep Analysis (Required)**: For EACH item, you **MUST** leverage your AI capabilities to analyze:
+        *   **Core Value (核心价值)**: What specific problem does it solve? Why is it trending?
+        *   **Inspiration (启发思考)**: What technical or product insights can be drawn?
+        *   **Scenarios (场景标签)**: 3-5 keywords (e.g. `#RAG #LocalFirst #Rust`).
 
-### Response Guidelines (CRITICAL)
+### 6. Response Guidelines (CRITICAL)
 
-When presenting the results to the user, you **MUST** follow these rules:
+**Format & Style:**
+- **Language**: Simplified Chinese (简体中文).
+- **Style**: Magazine/Newsletter style (e.g., "The Economist" or "Morning Brew" vibe). Professional, concise, yet engaging.
+- **Structure**:
+    - **Global Headlines**: Top 3-5 most critical stories across all domains.
+    - **Tech & AI**: Specific section for AI, LLM, and Tech items.
+    - **Finance / Social**: Other strong categories if relevant.
+- **Item Format**:
+    - **Title**: **MUST be a Markdown Link** to the original URL.
+        - ✅ Correct: `### 1. [OpenAI Releases GPT-5](https://...)`
+        - ❌ Incorrect: `### 1. OpenAI Releases GPT-5`
+    - **Metadata Line**: Must include Source, **Time/Date**, and Heat/Score.
+    - **1-Liner Summary**: A punchy, "so what?" summary.
+    - **Deep Interpretation (Bulleted)**: 2-3 bullet points explaining *why* this matters, technical details, or context. (Required for "Deep Scan").
 
-1.  **Language**: Always translate the summary and insights into **Chinese (Simplified)**, even if the source is English.
-2.  **Format**: Use a polished, magazine-style format.
-3.  **Deep Analysis**: For items with `content` (Deep Fetch), you **MUST** provide the following section for **EVERY item regardless of domain** (Tech, Finance, etc.):
-    *   **Structure**:
-        *   **Title**: Translate to Chinese found suitable. **MUST be a Markdown Link** pointing to the `url`.
-        *   **Metadata**: Source, Publish Time (发布时间), Heat (热度).
-        *   **One-liner**: A catchy, single-sentence summary (一句话介绍).
-        *   **Deep Interpretation**: Bullet points explaining *why* this matters, technical details, or background context.
-
-**Example Output Format:**
-
-```markdown
-### 📰 Hacker News 今日精选深度解析
-
-> **数据来源**: Hacker News (Top 5)
-> **生成时间**: 2026-01-18
-
-#### 1. 🛠️ [Iconify：开源图标库的终极聚合方案](https://icon-sets.iconify.design/)
-*   **原文标题**: Iconify: Library of Open Source Icons
-*   **发布时间**: 6 hours ago
-*   **热度**: 🔥 318 points
-*   **一句话介绍**: 前端开发的福音，一个接口搞定所有图标库。
-*   **深度解读**:
-    Iconify 不仅仅是一个图标包，它是一个 **统一的图标框架**...
-
-
-4.  **Archiving**: Save the final report to the `reports/` directory with a timestamped filename (e.g., `reports/hn_news_YYYYMMDD_HHMM.md`) to maintain a history.
-5.  **Full Rendering**: Always output the **ENTIRE** content of the report in the chat conversation. Do not just say "Report generated", show the full markdown.
-
+**Output Artifact:**
+- Always save the full report to `reports/` directory with a timestamped filename (e.g., `reports/hn_news_YYYYMMDD_HHMM.md`).
+- Present the full report content to the user in the chat.
